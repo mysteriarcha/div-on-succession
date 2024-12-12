@@ -1,0 +1,390 @@
+---
+title: "Guide on Diversity Metrics"
+author: "Gonzalo Velasco Mones"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: united
+    code_folding: show
+    code_summary: "Show code"
+    code_tools: true
+    code_line_numbers: true
+    code_overflow: scroll
+    toc: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    number_sections: true
+    fig_captions: true
+    highlight: tango
+bibliography: "https://api.citedrive.com/bib/126da26e-5aac-4b88-91f5-5b4fb1c9304b/references.bib?x=eyJpZCI6ICIxMjZkYTI2ZS01YWFjLTRiODgtOTFmNS01YjRmYjFjOTMwNGIiLCAidXNlciI6ICIxMzk2IiwgInNpZ25hdHVyZSI6ICIyY2FiZWMwMTA5ZWFjZDg2ZjVhZGZmNjcxODQ2ODQwOWNmZTYyYWI4Mzk5NzhiMmZjY2NkNGMwMGJlNDAxMDUyIn0="
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Components of diversity {.tabset .tabset-fade .tabset-pills}
+
+Traditionally, to calculate diversity, we need a vector of relative abundances, $\mathbf{p}$, 
+enclosing the abundance proportion of each species in the community. Hence, we obtain:
+
+1. $\mathbf{p} = [p_1,\ p_2,\ \ldots,\ p_n]$, $n$ being the number of species present in our sampled community. 
+2. $\sum \mathbf{p} = 1$
+3. $p_i > 0\ \forall\ i \in \{1, 2, \ldots, n\}$
+
+We can get this from any sample of species communities 
+(traditionally a matrix of plots $\times$ species in vegetation ecology). 
+
+When we include functional diversity, we need a matrix of distances $\mathbf{D}$ coming from
+a matrix of untransformed trait values (even monotonic transformations like logarithms 
+or square roots can alter the ordering of distances, making a pair of species close in
+the natural, or arithmetic, scale farther apart in the transformed scale than a pair of species
+originally distant on the natural scale). Gower distance is the most common type of 
+distance to deal with qualitative and quantitative trait scales simultaneously, and
+a recent modification by @debello2021 can find an appropriate weighting for traits
+that belong to common organismic properties (for example to not overemphasize our
+total distance from leaf traits if we include Leaf Area, SLA and LDM at the same time).
+
+Note that the following components of diversity are better understood as concepts telling
+us something about the communities than as actual metrics, implying that we must try to make
+sure that the metrics used capture the variation in each of the components, but the choice
+of metrics might be dependent on the research question and approach, and there might be
+many that provide equally useful summaries for each of the components.
+
+## Taxonomic Diversity
+
+### Richness
+
+The most common metric of diversity is of course taxonomic richness, or the number
+of species found within the community. This has since early times related to the
+areal distribution and to biological processes of competition or habitat suitability
+(see @browne1980, @richards2012, @vandermaarel2015).
+
+### Evenness
+
+Evenness provides a measure of how differences in relative abundance (i.e. the different 
+$p_i$ values) affect how we measure diversity. Many diversity metrics such as those coming
+from information theory give a mix of richness and evenness (@whittaker1972), as they
+emphasize that, given a richness number $S$, a more even community will have a higher 
+diversity than a less even community. 
+
+A common way to measure this is through  Pielou's evenness metric, although in this 
+study we will directly assess how diversity changes across the rarity-abundance spectrum 
+(see *Hill-Chao numbers* section).
+
+## Functional Diversity
+
+By the introduction of the matrix $\mathbf{D}$, the framework for functional diversity is
+more complex than for taxonomic diversity @schmera2023, @debello_book2021
+
+### Richness
+
+In the context of functional diversity, richness aims to provide a measure of the size
+of the trait space. It can be obtained as the number of functional clusters in a 
+classification of the distance matrix, or as the hypervolume defined in the functional
+space by our communities. 
+
+**In this paper we use hypervolumes to quantify richness.**
+
+### Regularity
+
+Due to both numerical and conceptual problems with the concept of evenness in functional
+space (refs), researchers have provided regularity as an alternative, but it aims to 
+capture a similar idea as evenness in taxonomic diversity, i.e. how dense vs sparse
+regions of the trait space alternate (i.e. a perfectly uniformly distributed 
+trait space would have high regularity, while a trait space with strongly
+separated sparse and dense regions would have low regularity). 
+
+**In this paper we use the topological structure of the hypervolumes to quantify regularity.**
+
+### Divergence
+
+Divergence provides a measure telling us what are the expected mean dissimilarities
+(i.e. the average distance value) between species. This can be obtained as the mean nearest 
+neighbor distance in tree-based distance contexts or as Rao Quadratic Entropy. 
+
+**In this paper we use Rao Quadratic Entropy, plus a correlated set of metrics
+introduced later, to quantify divergence.**
+
+
+# Hill-Chao numbers
+
+Hill numbers were originally provided to offer a family of diversity metrics, unified
+by a parameter $q$, that assigns different weights to common and rare species unifying 
+along its domain a host of other diversity metrics. In particular, calling our diversity
+of order $q$ as a function on the $\mathbf{p}$ vector $^qD(\mathbf{p})$:
+
+1. When $q = 0$: $\ ^0D(\mathbf{p}) = S$, or species richness
+2. When $q = 1$: $\ ^1D(\mathbf{p}) = \exp(H)$, or exponential of Shannon's entropy
+3. When $q = 2$: $\ ^2D(\mathbf{p}) = \sum\frac{1}{p_i^2}$, or Simpson's index
+4. When $q = \infty$: $\ ^{\infty}D(\mathbf{p}) = \frac{1}{\max(\mathbf{p})}$, or Berger-Parker index
+
+As it is obvious, when $p = \infty$, we measure diversity only based on the most common 
+species, while when $p = 0$ we are counting all species equally. Hence with increasing values
+of $q$ we weigh more the common species vs the rare ones in our diversity assessment. Hill numbers
+have recently been proven to be the only metrics of diversity satisfying certain desirable properties
+(@leinster2021).
+
+Recently, Anne Chao and colleagues have expanded this framework to functional (and phylogenetic)
+diversity, adding an extra parameter $\tau$, and calling the generalization "attribute diversity".
+The daunting formula looks like:
+
+$$
+^{q, \tau}\text{AD} = \left\{\sum_{i=1}^S v_i\left(\frac{a_i(\tau)}{\bar{V}}\right)^q\right\}^{1/(1-q)}
+$$
+
+where $v_i$ are again the relative abundances of each species and $\tau$, technically an 
+argument of the weighting function $a_i$ that, working as a step function,
+serves as a  measure of how much resolution we apply to our distance matrix $\mathbf{D}$: any species 
+separated by a distance smaller than $\tau$ are regarded as a single functional entity, 
+so large values of $\tau$ capture only patterns of diversity among functionally 
+(quite) different species. See @chao2019 for details.
+
+> Note that, while the range of values of $q$ is always $(-\infty, \infty)$, the
+domain of $\tau$ depends on the range of values of $\mathbf{D}$ which will change 
+between different studies. 
+In this study $q$ ranges between 0 and 3 and $\tau$ encompasses
+the range of values of $\mathbf{D}$.
+
+The dependence on a parameter makes of our diversity measure an entire curve (i.e. our
+units of observations, the communities, are not summarized as a single number but as an
+entire function varying across $q$ or $\tau$). This leads us to the use of Functional Data Analysis (FDA),
+which can allow to handle response variables that consist of functions and not scalars.
+
+When put together, AD depends on both parameters $q$ and $\tau$, generating a diversity
+surface on a 3-D space. In our study we will just analyze different "slices" of this 
+surface varying 
+
+To compute Hill-Chao numbers at different parameter value combinations we used the
+following code:
+
+```{r, eval=FALSE}
+
+# Load libraries for parallelization
+library(parallel); library(foreach); library(doFuture)
+
+# Activate cores (one for parameter combination)
+cl <- parallel::makeCluster(6)
+doParallel::registerDoParallel(cl)
+
+# Set parameter grid (100 values between minimal and maximal q and tau)
+{
+  q_0 <- 0; q_max <- 3
+  q_range <- seq(q_0, q_max, l = 1e2)
+  D_traits_mat[D_traits_mat < 0] <- 1e-3
+  tau_0 <- min(D_traits_mat); tau_max <- max(D_traits_mat)
+  tau_range <- seq(tau_0, tau_max, l = 1e2)
+  
+  # This function is necessary for the a(tau) part of the AD formula:
+  get_cut_D <- function(D, tau){
+    D[D > tau] <- tau
+    return(D)
+  }
+}
+
+# Define the function
+get_Hill_Chao_numbers <- function(
+                                  X = as.matrix(PxS_prop_filtered),
+                                  D = D_traits_mat,
+                                  q, 
+                                  tau = 0){
+  
+  # if(!all(near(rowSums(X), 1))) error("The matrix has not rowsums of 1")
+  
+  spp   <- apply(apply(X, 1, function(x) x > 0), 2, which)
+  
+  p <- vector("list", nrow(X))  
+  for(i in 1:nrow(X)) p[[i]] <- X[i, `[[`(spp, i)]
+  
+  cut_D <- get_cut_D(D = D, tau = tau)
+  
+  # Hill numbers:
+  get_Hill_nums <- function(q, p) sapply(q, function(q) sum(p^q)^(1/(1-q)))
+  
+  # Chao numbers:
+  hill_chao <- vector("numeric", nrow(X))
+
+  for(i in 1:nrow(X)){
+    if(tau == 0){
+      hill_chao[i] <- get_Hill_nums(q = q, p = p[[i]])
+      
+      # The function when q = 1 is not defined, but the lateral limits
+      # are equal to the exponential of Shannon's entropy. To avoid numerical
+      # instabilities, we establish a buffer of 0.001 q
+      if(abs(q-1) < 1e-3) hill_chao[i] <- exp(vegan::diversity(p[[i]]))
+      }
+    else{
+      f_tau <-  cut_D[spp[[i]], spp[[i]]]/tau
+      a     <-  as.vector((1 - f_tau) %*% p[[i]])
+      v     <-  p[[i]]/a
+      V     <-  sum(v*a)
+      
+      # To address the same numerical problem as for Hill numbers:
+      if(abs(q-1) < 1e-3) hill_chao[i] <- exp(sum(-v * a * log(a)))
+      else hill_chao[i] <- sum(v*(a/V)^q)^(1/(1-q))
+    }
+  }
+  
+  return(hill_chao)
+}
+
+# Vectorize the operation to work for a list of parameter values
+V_get_Hill_Chao_numbers <- Vectorize(get_Hill_Chao_numbers, vectorize.args = c("q", "tau"))
+
+# Define names for the different parameter combinations (Hill prefix means we 
+# vary q for a fixed tau, Chao prefix means we vary tau for a fixed q):
+obj_names <- c("Hill_profiles_tmin", "Hill_profiles_tmean", "Hill_profiles_tmax",
+               "Chao_profiles_0", "Chao_profiles_1", "Chao_profiles_2")
+
+# The following is called "metaprogramming". We define objects (character strings) that
+# will act as "code". Let's name the function calls:
+function_names <- c("V_get_Hill_Chao_numbers(q = q_range, tau = 0)", 
+                    "V_get_Hill_Chao_numbers(q = q_range, tau = mean(tau_range))", 
+                    "V_get_Hill_Chao_numbers(q = q_range, tau = max(tau_range))",
+                    "V_get_Hill_Chao_numbers(q = 0, tau = tau_range)",
+                    "V_get_Hill_Chao_numbers(q = 1, tau = tau_range)",
+                    "V_get_Hill_Chao_numbers(q = 2, tau = tau_range)"
+                    )
+
+# And now, due to the eval(str2lang(x)) combination, we can parallelize our
+# operations to activate the function calls that were stored as strings:
+res <- mclapply(as.list(function_names), function(x) eval(str2lang(x)), mc.cores = 6L)
+```
+
+The obtention of an entire curve of diversity led us to use FDA. This gives us an effect
+of succession across the entire domain of each one of our diversity curves. Hence we can assess
+the relative effect across $q$ (i.e. for common vs rare species) and across $\tau$ (i.e. 
+for proximal vs distant species in the trait space). Functiona data analysis can be
+made through the `mgcv` package; see @craiceanu2024.
+
+# Rao Quadratic Entropy
+
+The formula for Rao Quadratic Entropy is $\sum_{i,j} p_ip_jd_{ij}$, where $p_i$ and $p_j$ 
+are relative abundances of different species, and $d_{ij}$ is the functional distance among them.
+This can be put in a vectorized way:
+
+$$
+Q = \mathbf{p}'\mathbf{D}\mathbf{p}
+$$
+
+Where $\mathbf{p}'$ is the transpose of $\mathbf{p}$.
+This type of linear algebra operations are efficiently computed in R with the `%*%` and
+`crossprod` functions:
+
+```{r, eval=FALSE}
+Q <- crossprod(p, D %*% p)
+```
+
+
+A caveat with the use of $Q$ is that in natural communities it is strongly scale-dependent
+with the number of species observed (i.e., as it is natural, species rich-communities have 
+a higher range of functional distances than species poor communities in a way that changes
+the expected value of their functional distances). Hence, for each community, if we 
+keep the species abundance pattern $\mathbf{p}$ constant, we need to see how the observed
+$Q$ compares to many other possible permutations of the $\mathbf{D}$ matrix, i.e. what is 
+the *standardized effect size* (SES) of $Q$ in our community compared to the background $Q$ generated from 
+different species combinations on the species pool. Due to the quadratic, hence positive
+definite property of the metric, we used 4999 permutations, as the standard 999 was not
+enough to enforce the Central Limit Theorem to get effect sizes following a normal distribution.
+
+We calculated Rao's SES and p-values with the following code:
+
+```{r, eval = FALSE}
+
+Rao <- function(x,                     # Index of the plot (row of V) on which to compute Rao's
+                V = PxS_prop_filtered, # Vegetation matrix with relative abundances
+                D = D_traits_mat,      # Trait distance matrix with rownames and colnames
+                reps = 5e3){           # Iterations (1+4999)
+  
+  p <- V[x, ] # Define vector p from the vegetation matrix
+  p <- p[p > 0] # Filter out absent species
+  l_p <- length(p) # Get species richness
+  
+  if(length(p) == 1) return(p)
+  
+  names(p) <- colnames(V)[which(V[x, ] > 0)]
+  sp_N_pool  <- ncol(V)
+  sp_nms_comm  <- names(p)
+  
+  rao_vec <- vector("numeric", reps)
+  rao_vec[1] <- crossprod(p, D[sp_nms_comm, sp_nms_comm] %*% p)
+  
+  if(reps > 1){
+  # Make the iterations keeping the species richness and pattern of 
+  # abundance (p) constant, just changing the D matrix:
+    spp_draw <- replicate(reps, sample(sp_N_pool, l_p))
+    for(i in 2:reps){
+      rao_vec[i] <- crossprod(p, D[spp_draw[,i], spp_draw[,i]] %*% p)
+    }
+    # Get standardized effect sizes
+    rao_ses <- (rao_vec[1] - mean(rao_vec[-1]))/sd(rao_vec[-1])
+    p_value <- pnorm(rao_ses)
+    if(rao_ses > 0) p_value <- 1 - p_value
+    
+    return(c("Rao" = rao_vec[1], "Rao_SES"=rao_ses, "p_value" = p_value))
+  }
+  else return(rao_vec[1])
+}
+```
+
+
+# Ternary Diagram of Functional Diversity
+
+Recently, @ricotta2023 have proposed a decomposition of functional diversity into
+three parts, divergence (or simply "diversity"), dominance and redundancy. Dominance
+tells us how much of functional similarity is due to the event of two individuals belonging
+to the same species, and redundancy is a measure of how much the trait space of
+communities would be affected by the removal of a random species. This framework is
+complementary to the richness-regularity-divergence presented earlier, and can help us
+to make further assessments into community assembly processes from diversity patterns.
+
+The regression on variables that form part of proportions (or of any set of variables
+bound to sum a constant) needs special algorithms 
+(beta regression in case of 2 proportions, Dirichlet regression in case of more than 2).
+Hence, instead of using our successional gradient as we did up to now, we divided it 
+in 3 classes by tertiles as early, middle and late, and performed a specific ordination
+technique called "logratio analysis" as `easyCODA::LRA` (see its documentation
+for references). From the ordination diagram we could obtain both the differences
+in centroids between the three classes and the differences in spread through the classical
+vegetation ecology functions `vegan::adonis2` and `vegan::betadisper`, respectively.
+
+>Note that the general framework for the analysis of data in variables bound to sum
+a constant (1 in case of proportions) is called compositional data analysis and
+is a topic of active research. The major software tools in R are the packages 
+`compositions` and `easyCODA` (from the "Girona school" and the "Barcelona school", 
+respectively). See @pawlowsky-glahn2011, @greenacre2021 for references.
+
+# Hypervolumes: Measure and Structure
+
+Hypervolumes are clearly a functional richness measure. They are based on the parts of
+the trait space that are densely occupied. As our trait space incorporates many
+traits, we suffer the curse of dimensionality. Instead of using the raw trait space,
+we performed an ordination on the distances and found, through the `mFD::quality.fspaces`
+function. As many traits incorporate redundant information, there is a trade-off between 
+the number of axes used and the loss of information by dimensionality reduction from the ordination, defining
+an optima in the Mean Absolute Error (MAE) with a limited number of axes conserved from
+the ordination. Although in our study the optima was found with around 9 ordination axes,
+for computational reasons and the limited increase in MAE we selected 6 ordination axes.
+
+Still, 6 axes are too many to find the hypervolumes of each community: we would need
+communities with a species richness (i.e. an amount of points in the trait space) that
+is not found in most vegetation plots. Hence we treated again our successional gradient
+as a categorical variable and assigned each of our vegetation plots to the early-middle-late
+classification. Then we used the $\phi$ coefficient as a measure of fidelity of the entire
+species list to the different successional classes. To calculate the hypervolumes of
+each class we made a weighted sample of all species that had $\phi_{\text{class}} > 0$ as
+the species pool on which to calculate 50 iterations of the hypervolumes.
+
+Finally, to explore the hypervolume structure, we obtained the Betti numbers of the
+functional space in 1 and 2 dimensions (we did not explore higher dimensions due to
+computational costs). This allows us to obtain a "persistence diagram", i.e. how 
+do holes appear and disappear as we expand a buffer from each of the points in the
+trait space, and hence we can see how many are there and how "persistent" they are
+for each of our successional classes.
+
+Hypervolumes are calculated through the `hypervolume` package, the $\phi$ coefficient
+through the `psych` package and the holes through the `TDAstats` package.
+
+# References {.unnumbered}

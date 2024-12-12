@@ -1,0 +1,127 @@
+% !TeX program = lualatex
+
+\documentclass[a4paper, 9pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
+
+%\setmainfont{Times New Roman}
+% Load blindtext package for dummy text
+\usepackage{blindtext}
+% Load the setspace package
+\usepackage{setspace}
+% Using \doublespacing in the preamble 
+% changes the text to double-line spacing
+\doublespacing
+
+\usepackage[style=apa]{biblatex} %Imports biblatex package
+\addbibresource{bibliography.bib} %Import the bibliography file
+
+\usepackage{graphicx} % Required for inser\usepackage{multicol}ting images
+\usepackage{multirow}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+	citecolor=cyan,
+	pdfpagemode=FullScreen,
+}
+\usepackage{multicol}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{easyReview} % for \comment, \alert, etc.
+\usepackage{fancyhdr}
+\usepackage[paper=a4paper, inner=2cm, outer=2cm, top=2cm, bottom=1.5cm]{geometry}
+\usepackage{paralist}
+
+%\usepackage[switch, modulo]{lineno}
+%\linenumbers	
+%\modulolinenumbers[1]
+
+% \setlength{\columnsep}{1cm}
+\pagestyle{fancy}
+
+\renewcommand{\footnoterule}{\noindent\smash{\rule[3pt]{\textwidth}{.4pt}}}
+\newcommand{\refs}{(\alert{REFS})}
+
+\usepackage{authblk}
+
+\title{Multifaceted changes in diversity along succession in Central European vegetation point to a shift from stochastic to deterministic community assembly}
+\author[1]{Gonzalo Velasco Monés}
+\author[2,3]{Josep Padullés Cubino}
+\author[1]{Zdeňka Lososová}
+\affil[1]{
+	Department of Botany \& Zoology, Faculy of Science, Masaryk University, Kotlářská 2, 611 37, Brno, Czech Republic}
+\affil[2]{
+	Autonomous University of Barcelona, 08193 Cerdanyola del Vallès, Spain}
+\affil[3]{
+	Centre de Recerca d’Ecologia i Aplicacions Forestals (CREAF), 08193 Cerdanyola del Vallès, Spain}
+
+\renewcommand\Affilfont{\itshape\small}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		Changes in taxonomic and functional diversity of plant assemblages generally represent outcomes of community assembly mechanisms. Here, using vegetation and functional trait databases from the Czech Republic, we applied an extensive framework based on Hill numbers, a partition of diversity metrics into dominance, redundancy, and divergence, and modern analytical tools on functional hypervolumes based on persistence homology (a tool from topology), to improve the interpretation of the diversity changes along successional gradients. To infer a successional gradient, we used a synthetic variable recently described for the flora of the Czech Republic that characterizes species successional preferences, and obtained a community weighted mean for each vegetation plot that represented well the range of original values. We found that there is a unimodal response of both taxonomic and functional Hill-based diversity along succession, essentially driven by rare species, agreeing with the Intermediate Disturbance Hypothesis. Functional divergence, measured by Rao’s entropy, also followed a unimodal response, whereby vegetation plots on early successional positions tended to be more functionally underdispersed, while intermediate successional plots tended to be more overdispersed, and late stage plots had intermediate values.  Succession led vegetation from dominance-type of diversity to redundancy-type. Functional hypervolumes decreased in the latest stages of succession and had a more packed structure with a smaller amount of holes. Our results confirm significant multifaceted changes in diversity along succession and shed light on the processes that are behind such as dispersal limitation, random assortment and competition taking place at different stages of succession.
+	\end{abstract}
+	
+	%\begin{multicols}{2}
+	
+	\section*{Introduction}
+	\label{sec:Intro}
+	
+	Plant succession has been a major topic of ecological research for over a century \refs. One definition for plant succession is: "the change in species composition or in the three-dimensional cover of a specified place through time" \refs, further specifying that this change starts after some particular disturbance that removed previous biomass, which distinguishes primary or secondary successions according to whether the disturbance destroyed all previous substrate and a surrounding biotically rich matrix or not, respectively \refs. 
+	
+	Although the early views supposed succession to be a deterministic process reaching necessarily a climax determined by climate \refs, more recent views have put the stress in the non-equilibrial nature of succession and the lack of a clearly defined end, relating more to Cowles \refs saying that “as a matter of fact we have a variable approaching a variable rather than a constant” \refs. However, even if succession has no clearly defined end, there is ample evidence showing that it has a decaying rate of change \refs, a trend to generate communities similar to those before disturbance in a convergent way (at least at regional scales) \refs, and a general shift from stochastic to deterministic processes governing community assembly \refs. Hence, it is justified to talk about succession as a process with distinct parts, each one being driven by different mechanisms of community assembly.
+	\alert{REFERENCES: Clements 1916, Cowles 1901, Whittaker 1953, Pickett 1985, Horn 1973, Anderson 2007, Pickett et al 2015, Prach et al 2016, Li et al. 2016, del Moral 2009, Maren et al 2018, Chang et al 2019, Chang \& HilleRisLambers 2019...}
+	
+	Diversity patterns have traditionally been assumed to represent community assembly mechanisms \refs. Although this association came to be controversial (different niche-based mechanisms, or neutral models which assume no niche differences, can generate the same patterns, \refs), the study of the pattern-mechanism relationship has benefited from many rigorous experimental tests \refs, theoretical advances \refs, and complemented with developments in the metrics of (taxonomic) diversity and the introduction of functional diversity. In particular, taxonomic diversity has seen the popularization of Hill numbers, which provide an intuitive unification of multiple metrics and have been shown to be the only type of diversity metric satisfying some reasonable desired properties \refs. Furthermore, functional diversity, drawing on classic niche theory \refs, aims to provide a measure of how strong the interactions among species or with the environment are \refs. In addition, it provides important information on the expected behavior of the community in front of disturbances \refs or how many different functional dimensions are needed to describe the ecological communities under study \refs.
+	\alert{REFERENCES: MacArthur 1955, 1967, Cohen 1968, Pielou 1975, Tokeshi 1993, Magurran 2004, Tilman and Isbell and the plethora of BEF studies, Loreau 2010, Leinster 2021, Keddy \& Weiher 1995...}
+	
+	A common observation in vascular plant succession is the peak of species richness at intermediate values of disturbance or of successional development \refs. This can be due, in the relay-floristics model of succession, to the colonization of late-stage species while early-stage species have not yet disappeared (extinction debt, \refs). Complementary to this explanation, according to life-history theory for plants, competitive interactions would peak during mid-succession, and richness should promote competition \refs, so biotic interactions would also generate the unimodal richness pattern. This explanation would also be congruent with the specific traits related to successional development (\alert{Garnier's team studies on Mediterranean succession}). This unimodal richness pattern across plant succession has also found for functional diversity (\alert{Violle et al. 2017}), indicating that it truly is an effect of communuity assembly mechanisms.
+	
+	In this paper, we aim to test the prevalence of some common successional diversity patterns at a large scale and for multiple ecologically meaningful diversity metrics, particularly allowing us to answer:
+	
+	\begin{compactenum}
+		\item Is the unimodal succession-diversity relationship consistent across different diversity metrics?
+		\item Is there a different directional trend in diversity for common and rare species? That is: do common and rare species provide different contributions to diversity across succession?
+		\item Are there directional trends in the decomposition of functional diversity?
+		\item Are there directional trends in the size and structure of the functional hypervolumes?
+	\end{compactenum}
+
+	\section*{Materials \& Methods}
+	\label{sec:mms}
+	
+	\subsection*{Data}
+	
+
+	
+	\subsection*{Taxonomic Diversity}
+	
+	Diversity is a complex concept \refs. In terms of functional diversity, we need a vector of species relative abundances $\mathbf{p}$, from which we can distinguish richness and evenness, but information-theory based indices of diversity are known to be halfway between the two concepts \refs.
+	
+	\paragraph*{Hill numbers}: They are a unification of commonly used diversity metrics through a parameter $q$ drawing from information theory. Their formula (the exponentiation of Renyi's entropies) is:
+	$^qD(\mathbf{p}) = \left(\sum_{i = 1}^{S} p_i^q\right)^{\frac 1 {1-q}}$, where $\mathbf{p}$ is the vector of relative abundances, $S$ is the total number of species, and $q$ modulates how much weight is assigned to common vs rare species: when $q=0$, $^0D(\mathbf{p}) = S$, when $q = 1$ the function $D$ returns the exponential of Shannon entropy, when $q = 2$, we obtain the Simpson's index, and when $q = \infty$ we obtain the Berger-Parker index (i.e. the reciprocal of the highest relative abundance, so just taking into account the most common species). The range of $q$ is $(-\infty, \infty)$, but typically only positive values (from 0 up to 2 or 3) are used. We made a grid of 100 equally spaced values between 0 and 3 and evaluated the function 
+	
+	\subsection*{Functional Diversity}
+	
+	When dealing with functional diversity, we also need a matrix of functional distances, $\mathbf{D}$, which gives us a third component of the diversity concept, divergence (furthermore, some authors claim functional evenness is not a useful concept neither numerically \refs nor semantically \refs, so it should be replaced by regularity)
+	
+	\paragraph*{Chao numbers}
+	
+	\paragraph*{Quadratic Entropy}
+	
+	\paragraph*{Ternary Diagram}
+	
+	\paragraph*{Hypervolume size and structure}
+	
+	\section*{Results}
+	\label{sec:res}
+	
+	\section*{Discussion}
+	\label{sec:disc}
+\end{document}
